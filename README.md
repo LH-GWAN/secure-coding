@@ -8,12 +8,12 @@ Flask + SQLite 로 구현
 
 ## 설치 및 실행
 
-# 1) 필요 설치 라이브러리
+## 1) 필요 설치 라이브러리
 ```
 pip install -r requirements.txt
 ```
 
-# 2) 실행
+### 2) 실행
 ```
 python3 app.py
 ```
