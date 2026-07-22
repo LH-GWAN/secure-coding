@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}마이페이지{% endblock %}
+{% block content %}
+<h1>마이페이지</h1>
+
+<div class="card">
+  <h2>소개글</h2>
+  <form method="post" action="{{ url_for('auth.settings') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="action" value="bio">
+    <label for="bio">자기소개</label>
+    <textarea id="bio" name="bio" maxlength="500"
+              placeholder="다른 사용자에게 보여질 소개글입니다.">{{ g.user['bio'] }}</textarea>
+    <div style="margin-top:12px;"><button type="submit">소개글 저장</button></div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>비밀번호 변경</h2>
+  <form method="post" action="{{ url_for('auth.settings') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="action" value="password">
+    <label for="current_password">현재 비밀번호</label>
+    <input id="current_password" name="current_password" type="password" required>
+    <label for="new_password">새 비밀번호</label>
+    <input id="new_password" name="new_password" type="password" required minlength="8"
+           placeholder="8자 이상">
+    <label for="confirm_password">새 비밀번호 확인</label>
+    <input id="confirm_password" name="confirm_password" type="password" required minlength="8">
+    <div style="margin-top:12px;"><button type="submit">비밀번호 변경</button></div>
+  </form>
+</div>
+
+<p><a href="{{ url_for('auth.profile', user_id=g.user['id']) }}">← 내 프로필 보기</a></p>
+{% endblock %}

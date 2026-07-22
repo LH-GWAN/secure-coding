@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ '상품 수정' if mode == 'edit' else '상품 등록' }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:560px;margin:0 auto;">
+  <h1>{{ '상품 수정' if mode == 'edit' else '상품 등록' }}</h1>
+  <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="title">제목</label>
+    <input id="title" name="title" type="text" required maxlength="100"
+           value="{{ item['title'] if item else '' }}">
+    <label for="price">가격(원)</label>
+    <input id="price" name="price" type="number" required min="0" step="1"
+           value="{{ item['price'] if item else '' }}">
+    <label for="description">설명</label>
+    <textarea id="description" name="description" maxlength="2000">{{ item['description'] if item else '' }}</textarea>
+    {% if mode == 'edit' %}
+      <label for="status">상태</label>
+      <select id="status" name="status">
+        <option value="available" {{ 'selected' if item['status']=='available' }}>판매중</option>
+        <option value="sold" {{ 'selected' if item['status']=='sold' }}>판매완료</option>
+      </select>
+    {% endif %}
+    <label for="image">이미지 (png/jpg/gif/webp, 최대 2MB)</label>
+    <input id="image" name="image" type="file" accept="image/png,image/jpeg,image/gif,image/webp">
+    <div style="margin-top:16px;">
+      <button type="submit">{{ '수정하기' if mode == 'edit' else '등록하기' }}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Tiny 중고마켓{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="{{ url_for('products.list_products') }}">🛒 Tiny 중고마켓</a>
+    <nav>
+      {% if g.user %}
+        <a href="{{ url_for('products.list_products') }}">상품</a>
+        <a href="{{ url_for('products.create') }}">판매하기</a>
+        <a href="{{ url_for('chat.room') }}">전체채팅</a>
+        <a href="{{ url_for('messages.inbox') }}">쪽지</a>
+        <a href="{{ url_for('transfers.index') }}">지갑</a>
+        {% if g.user['role'] == 'admin' %}
+          <a class="admin-link" href="{{ url_for('admin.dashboard') }}">관리자</a>
+        {% endif %}
+        <a href="{{ url_for('auth.settings') }}">마이페이지</a>
+        <a href="{{ url_for('auth.profile', user_id=g.user['id']) }}">
+          {{ g.user['username'] }}</a>
+        <form class="inline" method="post" action="{{ url_for('auth.logout') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="link-btn" type="submit">로그아웃</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">로그인</a>
+        <a href="{{ url_for('auth.register') }}">회원가입</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <small>Tiny Second-hand Shopping Platform · 보안 실습 과제</small>
+</footer>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}관리자 대시보드{% endblock %}
+{% block content %}
+<h1>관리자 대시보드</h1>
+<div class="card row">
+  <div class="stat"><div class="n">{{ stats['users'] }}</div><div class="muted">전체 회원</div></div>
+  <div class="stat"><div class="n">{{ stats['suspended'] }}</div><div class="muted">정지 회원</div></div>
+  <div class="stat"><div class="n">{{ stats['products'] }}</div><div class="muted">전체 상품</div></div>
+  <div class="stat"><div class="n">{{ stats['blocked'] }}</div><div class="muted">차단 상품</div></div>
+  <div class="stat"><div class="n">{{ stats['open_reports'] }}</div><div class="muted">미처리 신고</div></div>
+</div>
+<div class="card row">
+  <a class="btn" href="{{ url_for('admin.users') }}">회원 관리</a>
+  <a class="btn" href="{{ url_for('admin.products') }}">상품 관리</a>
+  <a class="btn" href="{{ url_for('admin.reports') }}">신고 관리</a>
+  <a class="btn btn-ghost" href="{{ url_for('admin.audit_log') }}">감사 로그</a>
+</div>
+{% endblock %}

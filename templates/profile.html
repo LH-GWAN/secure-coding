@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user['username'] }} 님{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>{{ profile_user['username'] }}
+    {% if profile_user['status'] == 'suspended' %}
+      <span class="badge badge-blocked">정지됨</span>{% endif %}
+  </h1>
+  <p class="muted">가입일 {{ profile_user['created_at'] }}</p>
+  {% if profile_user['bio'] %}<p>{{ profile_user['bio'] }}</p>{% endif %}
+  {% if g.user and g.user['id'] != profile_user['id'] %}
+    <div class="row" style="margin-top:12px;">
+      <a class="btn btn-sm" href="{{ url_for('messages.thread', other_id=profile_user['id']) }}">쪽지 보내기</a>
+      <a class="btn btn-sm btn-ghost" href="{{ url_for('reports.new', target_type='user', target_id=profile_user['id']) }}">신고</a>
+    </div>
+  {% endif %}
+</div>
+
+<h2>판매 중인 상품</h2>
+{% if items %}
+  <div class="grid">
+    {% for it in items %}
+      <a class="product-card" href="{{ url_for('products.detail', pid=it['id']) }}">
+        {% if it['image_path'] %}
+          <img src="{{ url_for('products.image', filename=it['image_path']) }}" alt="">
+        {% else %}<div class="no-img">이미지 없음</div>{% endif %}
+        <div class="body">
+          <div>{{ it['title'] }}</div>
+          <div class="price">{{ '{:,}'.format(it['price']) }}원</div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="muted">등록한 상품이 없습니다.</p>
+{% endif %}
+{% endblock %}

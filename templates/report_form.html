@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}신고하기{% endblock %}
+{% block content %}
+<div class="card" style="max-width:520px;margin:0 auto;">
+  <h1>신고하기</h1>
+  <p class="muted">
+    {% if target_type == 'product' %}상품{% else %}사용자{% endif %}:
+    <strong>{{ label }}</strong>
+  </p>
+  <form method="post" action="{{ url_for('reports.create') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="target_type" value="{{ target_type }}">
+    <input type="hidden" name="target_id" value="{{ target_id }}">
+    <label for="reason">신고 사유</label>
+    <textarea id="reason" name="reason" maxlength="500" required autofocus
+              placeholder="신고 사유를 구체적으로 작성해 주세요."></textarea>
+    <p class="muted" style="margin-top:8px;">
+      서로 다른 사용자 {{ 3 }}명 이상이 신고하면 자동으로 차단/휴면 처리됩니다.
+    </p>
+    <div style="margin-top:12px;">
+      <button class="btn-danger" type="submit">신고 제출</button>
+      <a class="btn btn-ghost" href="{{ request.referrer or url_for('products.list_products') }}">취소</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}상품 목록{% endblock %}
+{% block content %}
+<h1>상품 둘러보기</h1>
+<form class="searchbar" method="get" action="{{ url_for('products.list_products') }}">
+  <input type="text" name="q" value="{{ q }}" placeholder="상품명 또는 설명 검색">
+  <button type="submit">검색</button>
+  {% if q %}<a class="btn btn-ghost" href="{{ url_for('products.list_products') }}">초기화</a>{% endif %}
+</form>
+
+{% if q %}<p class="muted">'{{ q }}' 검색 결과 {{ items|length }}건</p>{% endif %}
+
+{% if items %}
+  <div class="grid">
+    {% for it in items %}
+      <a class="product-card" href="{{ url_for('products.detail', pid=it['id']) }}">
+        {% if it['image_path'] %}
+          <img src="{{ url_for('products.image', filename=it['image_path']) }}" alt="">
+        {% else %}<div class="no-img">이미지 없음</div>{% endif %}
+        <div class="body">
+          <div>{{ it['title'] }}
+            {% if it['status'] == 'sold' %}<span class="badge badge-sold">판매완료</span>{% endif %}
+          </div>
+          <div class="price">{{ '{:,}'.format(it['price']) }}원</div>
+          <div class="muted">{{ it['seller_name'] }}</div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card"><p class="muted">등록된 상품이 없습니다.</p></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}지갑{% endblock %}
+{% block content %}
+<h1>내 지갑</h1>
+<div class="card">
+  <p class="muted">현재 잔액</p>
+  <p style="font-size:2rem;font-weight:700;">{{ '{:,}'.format(balance) }}원</p>
+  <form class="inline" method="post" action="{{ url_for('transfers.charge') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn btn-ghost" type="submit">[데모] 100,000원 충전</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>송금하기</h2>
+  <form method="post" action="{{ url_for('transfers.send') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label for="to_username">받는 사람(아이디)</label>
+    <input id="to_username" name="to_username" type="text" required>
+    <label for="amount">금액(원)</label>
+    <input id="amount" name="amount" type="number" min="1" step="1" required>
+    <label for="memo">메모(선택)</label>
+    <input id="memo" name="memo" type="text" maxlength="200">
+    <div style="margin-top:16px;"><button type="submit">송금</button></div>
+  </form>
+</div>
+
+<div class="card" style="padding:0;">
+  <h2 style="padding:16px 16px 0;">거래 내역</h2>
+  {% if history %}
+    <table>
+      <thead><tr><th>일시</th><th>보낸사람</th><th>받는사람</th><th>금액</th><th>메모</th></tr></thead>
+      <tbody>
+        {% for t in history %}
+          <tr>
+            <td class="muted">{{ t['created_at'] }}</td>
+            <td>{{ t['sender_name'] }}</td>
+            <td>{{ t['receiver_name'] }}</td>
+            <td style="font-weight:600;
+              color:{{ 'var(--danger)' if t['sender_id']==g.user['id'] else 'var(--ok)' }};">
+              {{ '-' if t['sender_id']==g.user['id'] else '+' }}{{ '{:,}'.format(t['amount']) }}원
+            </td>
+            <td>{{ t['memo'] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted" style="padding:0 16px 16px;">거래 내역이 없습니다.</p>
+  {% endif %}
+</div>
+{% endblock %}

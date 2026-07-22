@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}신고 관리{% endblock %}
+{% block content %}
+<h1>신고 관리</h1>
+<div class="card" style="padding:0;">
+  <table>
+    <thead><tr><th>ID</th><th>신고자</th><th>대상</th><th>사유</th><th>상태</th><th>일시</th><th>조치</th></tr></thead>
+    <tbody>
+      {% for r in reports %}
+        <tr>
+          <td>{{ r['id'] }}</td>
+          <td>{{ r['reporter_name'] }}</td>
+          <td>
+            {% if r['target_type'] == 'product' %}
+              <a href="{{ url_for('products.detail', pid=r['target_id']) }}">상품 #{{ r['target_id'] }}</a>
+            {% else %}
+              <a href="{{ url_for('auth.profile', user_id=r['target_id']) }}">회원 #{{ r['target_id'] }}</a>
+            {% endif %}
+          </td>
+          <td>{{ r['reason'] }}</td>
+          <td>
+            {% if r['status'] == 'open' %}<span class="badge badge-blocked">미처리</span>
+            {% else %}<span class="badge badge-sold">처리완료</span>{% endif %}
+          </td>
+          <td class="muted">{{ r['created_at'] }}</td>
+          <td>
+            {% if r['status'] == 'open' %}
+              <form class="inline" method="post" action="{{ url_for('admin.resolve_report', rid=r['id']) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm" type="submit">처리완료</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p><a href="{{ url_for('admin.dashboard') }}">← 대시보드</a></p>
+{% endblock %}

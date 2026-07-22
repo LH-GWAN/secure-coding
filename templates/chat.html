@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}전체 채팅{% endblock %}
+{% block content %}
+<h1>전체 채팅 <span class="muted" style="font-size:.9rem;">(실시간)</span></h1>
+<p class="muted">모든 사용자가 함께 대화하는 실시간 채팅방입니다.</p>
+<div class="card">
+  <div id="chat-log" class="msg-list" style="max-height:420px;overflow-y:auto;">
+    {% for m in msgs %}
+      <div class="bubble {{ 'me' if m['username'] == g.user['username'] else 'them' }}">
+        <div><strong>{{ m['username'] }}</strong></div>
+        <div>{{ m['content'] }}</div>
+        <div class="meta">{{ m['created_at'] }}</div>
+      </div>
+    {% else %}
+      <p class="muted" id="chat-empty">아직 메시지가 없습니다. 첫 메시지를 남겨보세요.</p>
+    {% endfor %}
+  </div>
+  <p id="chat-note" class="muted" style="min-height:1em;margin:8px 0;"></p>
+  <form id="chat-form">
+    <div class="searchbar" style="margin-bottom:0;">
+      <input id="chat-input" type="text" maxlength="500" placeholder="메시지 입력"
+             autocomplete="off" required>
+      <button type="submit">전송</button>
+    </div>
+  </form>
+</div>
+<span id="me" data-username="{{ g.user['username'] }}" hidden></span>
+<script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+<script src="{{ url_for('static', filename='chat.js') }}"></script>
+{% endblock %}

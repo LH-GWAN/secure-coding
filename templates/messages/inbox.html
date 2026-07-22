@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}쪽지함{% endblock %}
+{% block content %}
+<h1>쪽지함</h1>
+{% if partners %}
+  <div class="card" style="padding:0;">
+    <table>
+      <thead><tr><th>상대</th><th>마지막 대화</th><th></th></tr></thead>
+      <tbody>
+        {% for p in partners %}
+          <tr>
+            <td>{{ p['username'] }}</td>
+            <td class="muted">{{ p['last_at'] }}</td>
+            <td><a class="btn btn-sm" href="{{ url_for('messages.thread', other_id=p['id']) }}">열기</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="card"><p class="muted">주고받은 쪽지가 없습니다.</p></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}감사 로그{% endblock %}
+{% block content %}
+<h1>감사 로그</h1>
+<div class="card" style="padding:0;">
+  <table>
+    <thead><tr><th>일시</th><th>수행자</th><th>행위</th><th>대상</th><th>상세</th></tr></thead>
+    <tbody>
+      {% for l in logs %}
+        <tr>
+          <td class="muted">{{ l['created_at'] }}</td>
+          <td>{{ l['actor_name'] or '-' }}</td>
+          <td>{{ l['action'] }}</td>
+          <td>{{ l['target'] }}</td>
+          <td class="muted">{{ l['detail'] }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p><a href="{{ url_for('admin.dashboard') }}">← 대시보드</a></p>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ other['username'] }} 님과의 대화{% endblock %}
+{% block content %}
+<h1>{{ other['username'] }} 님과의 대화</h1>
+<div class="card">
+  <div class="msg-list">
+    {% for m in msgs %}
+      <div class="bubble {{ 'me' if m['sender_id'] == g.user['id'] else 'them' }}">
+        <div>{{ m['content'] }}</div>
+        <div class="meta">{{ m['created_at'] }}</div>
+      </div>
+    {% else %}
+      <p class="muted">아직 대화가 없습니다. 첫 쪽지를 보내보세요.</p>
+    {% endfor %}
+  </div>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="searchbar" style="margin-bottom:0;">
+      <input type="text" name="content" maxlength="1000" placeholder="메시지 입력" autofocus required>
+      <button type="submit">전송</button>
+    </div>
+  </form>
+</div>
+<p><a href="{{ url_for('messages.inbox') }}">← 쪽지함으로</a></p>
+{% endblock %}

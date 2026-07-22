@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ item['title'] }}{% endblock %}
+{% block content %}
+<div class="card">
+  {% if item['status'] == 'blocked' %}
+    <div class="flash flash-danger">이 상품은 관리자에 의해 차단되었습니다.</div>
+  {% endif %}
+  {% if item['image_path'] %}
+    <img style="max-width:100%;border-radius:8px;margin-bottom:12px;"
+         src="{{ url_for('products.image', filename=item['image_path']) }}" alt="">
+  {% endif %}
+  <h1>{{ item['title'] }}
+    {% if item['status'] == 'sold' %}<span class="badge badge-sold">판매완료</span>{% endif %}
+  </h1>
+  <p class="price" style="font-size:1.3rem;">{{ '{:,}'.format(item['price']) }}원</p>
+  <p class="muted">판매자:
+    <a href="{{ url_for('auth.profile', user_id=item['seller_id']) }}">{{ item['seller_name'] }}</a>
+    · {{ item['created_at'] }}</p>
+  <hr style="border:none;border-top:1px solid var(--line);margin:12px 0;">
+  <p style="white-space:pre-wrap;">{{ item['description'] }}</p>
+
+  <div class="row" style="margin-top:16px;">
+    {% if g.user and g.user['id'] == item['seller_id'] %}
+      <a class="btn" href="{{ url_for('products.edit', pid=item['id']) }}">수정</a>
+      <form class="inline" method="post" action="{{ url_for('products.delete', pid=item['id']) }}"
+            onsubmit="return confirm('정말 삭제하시겠습니까?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-danger" type="submit">삭제</button>
+      </form>
+    {% elif g.user %}
+      <a class="btn" href="{{ url_for('messages.thread', other_id=item['seller_id']) }}">판매자에게 쪽지</a>
+      <a class="btn btn-ghost" href="{{ url_for('reports.new', target_type='product', target_id=item['id']) }}">신고</a>
+    {% else %}
+      <a class="btn" href="{{ url_for('auth.login') }}">로그인 후 연락하기</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
